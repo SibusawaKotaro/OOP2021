@@ -187,6 +187,7 @@ namespace SendMail
             this.btCancel.TabIndex = 2;
             this.btCancel.Text = "キャンセル";
             this.btCancel.UseVisualStyleBackColor = true;
+            this.btCancel.Click += new System.EventHandler(this.btCancel_Click);
             // 
             // btDefault
             // 

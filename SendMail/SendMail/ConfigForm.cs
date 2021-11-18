@@ -73,5 +73,7 @@ namespace SendMail {
             cbSsl.Checked = settings.Ssl;    //SSL
             tbSender.Text = settings.MailAddr;   //送信元
             }
-        }
+
+        
+    }
     }

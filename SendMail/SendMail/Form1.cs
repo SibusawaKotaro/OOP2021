@@ -25,7 +25,7 @@ namespace SendMail
         public Form1() {
             InitializeComponent();
             var filepass = @"./settings.xml";
-            if (!File.Exists(filepass)) {
+            if (!File.Exists(filepass) ) {
                 configForm.ShowDialog();
             }
 
@@ -41,6 +41,7 @@ namespace SendMail
         private void btSend_Click(object sender, EventArgs e)
         {
             try {
+                btSend.Enabled = false;
                 //メール送信のためのインスタンスを生成
                 MailMessage mailMessage = new MailMessage();
                 //差出人アドレス
@@ -60,7 +61,14 @@ namespace SendMail
                 //件名（タイトル）
                 mailMessage.Subject = tbTitle.Text;
                 //本文
-                mailMessage.Body = tbMessage.Text;
+                if (tbMessage.Text.Trim() == "") {
+                    MessageBox.Show("本文が未入力です");
+                    btSend.Enabled = true;
+                    return;
+                }
+                else {
+                    mailMessage.Body = tbMessage.Text;
+                }
 
 
 
@@ -78,8 +86,12 @@ namespace SendMail
                 smtpClient.EnableSsl = settings.Ssl;
                 //smtpClient.Send(mailMessage);
 
+                
+
                 smtpClient.SendCompleted += SmtpClient_SendCompleted;
                 string userState = "SendMail";
+
+                
                 smtpClient.SendAsync(mailMessage, userState);
                 
 
@@ -97,7 +109,11 @@ namespace SendMail
                 MessageBox.Show(e.Error.Message);
             }else{
                 MessageBox.Show("送信完了");
+                tbTo.Text = null;
+                tbTitle.Text = null;
+                tbMessage.Text = null;
             }
+            btSend.Enabled = true;
 
         }
 
@@ -108,20 +124,29 @@ namespace SendMail
         }
 
         private void Form1_Load(object sender, EventArgs e) {
-            if (File.Exists(@"./settings.xml")) {
-                using (var reader = XmlReader.Create(@"./settings.xml")) {
+            try {
+                if (File.Exists(@"./settings.xml")) {
+                    using (var reader = XmlReader.Create(@"./settings.xml")) {
 
-                    var serializer = new DataContractSerializer(typeof(Settings));
-                    var readSetting = serializer.ReadObject(reader) as Settings;
+                        var serializer = new DataContractSerializer(typeof(Settings));
+                        var readSetting = serializer.ReadObject(reader) as Settings;
 
-                    settings.Host = readSetting.Host;
-                    settings.Port = readSetting.Port;
-                    settings.MailAddr = readSetting.MailAddr;
-                    settings.Pass = readSetting.Pass;
-                    settings.Ssl = readSetting.Ssl;
+                        settings.Host = readSetting.Host;
+                        settings.Port = readSetting.Port;
+                        settings.MailAddr = readSetting.MailAddr;
+                        settings.Pass = readSetting.Pass;
+                        settings.Ssl = readSetting.Ssl;
 
+                    }
                 }
             }
+            catch (Exception ) {
+                MessageBox.Show("xmlが正しくありません");
+                configForm.ShowDialog();
+            }
+            
         }
+
+        
     }
 }
