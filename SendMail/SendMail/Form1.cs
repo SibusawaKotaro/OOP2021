@@ -69,7 +69,7 @@ namespace SendMail
                 else {
                     mailMessage.Body = tbMessage.Text;
                 }
-
+                
 
 
                 //SMTPを使ってメールを送信する
