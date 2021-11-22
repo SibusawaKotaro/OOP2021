@@ -155,7 +155,7 @@ namespace Pelmanism {
                 card.Close();
             }
             buttonStart.Enabled = false;
-            gameSec = 0;
+            gameSec = 60;
             timer1.Start();
 
             labelGuidance.Text = "クリックしてカードをめくってください";
@@ -175,7 +175,7 @@ namespace Pelmanism {
         }
 
         private void timer1_Tick(object sender, EventArgs e) {
-            gameSec++;
+            gameSec--;
             labelSec.Text = gameSec + "秒経過";
         }
 
